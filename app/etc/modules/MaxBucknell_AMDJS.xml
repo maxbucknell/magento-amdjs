@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <MaxBucknell_AMDJS>
+            <active>true</active>
+            <codePool>community</codePool>
+        </MaxBucknell_AMDJS>
+    </modules>
+</config>

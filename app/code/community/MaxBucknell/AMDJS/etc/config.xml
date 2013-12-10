@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <global>
+        <blocks>
+            <MaxBucknell_AMDJS>
+                <class>MaxBucknell_AMDJS_Block</class>
+            </MaxBucknell_AMDJS>
+        </blocks>
+        <helpers>
+            <MaxBucknell_AMDJS>
+                <class>MaxBucknell_AMDJS_Helper</class>
+            </MaxBucknell_AMDJS>
+        </helpers>
+    </global>
+    <frontend>
+        <layout>
+            <updates>
+                <MaxBucknell_AMDJS>
+                    <file>modules.xml</file>
+                </MaxBucknell_AMDJS>
+            </updates>
+        </layout>
+    </frontend>
+</config>

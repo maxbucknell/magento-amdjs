@@ -1,0 +1,8 @@
+<script src="<?php echo $requireJSUrl; ?>"></script>
+<script>
+  require.config({
+    'baseUrl': '<?php echo $baseUrl; ?>',
+    'waitSeconds': 30,
+    'deps': <?php echo $jsonScripts; ?>
+  });
+</script>
