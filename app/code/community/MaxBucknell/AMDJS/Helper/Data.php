@@ -2,18 +2,23 @@
 
 require_once(Mage::getBaseDir('lib').DS.'amd-packager-php/Packager.php');
 
-class RedboxDigital_Boxes_Helper_Data exends Mage_Core_Helper_Abstract
+class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    public function getModuleCacheDir()
+    {
+        return Mage::getBaseDir('media').DS.'amdjs-cache';
+    }
+
     public function getModuleSetFilename($modules)
     {
         $hash = $this->_hashModuleSet($modules);
-        return Mage::getBaseDir('media').DS.'boxes-cache'.DS.$hash.'.js';
+        return Mage::getBaseDir('media').DS.'amdjs-cache'.DS.$hash.'.js';
     }
 
     public function getModuleSetURL($modules)
     {
         $hash = $this->_hashModuleSet($modules);
-        return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).DS.'boxes-cache'.DS.$hash.'.js';
+        return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).DS.'amdjs-cache'.DS.$hash.'.js';
     }
 
     public function isModuleSetCached($modules)
@@ -27,14 +32,15 @@ class RedboxDigital_Boxes_Helper_Data exends Mage_Core_Helper_Abstract
         $hash = $this->_hashModuleSet($modules);
 
         $filename = $this->getModuleSetFilename($modules);
-        $baseDir = Mage::getBaseDir('js').DS.'boxes';
+        $baseDir = Mage::getBaseDir().DS.'js'.DS.'maxbucknell'.DS.'amdjs'.DS.'modules';
+
+        Mage::app()->getConfig()->getOptions()->createDirIfNotExists($this->getModuleCacheDir());
 
         $packager = new Packager();
-        $packager->setBaseDir($baseDir);
+        $packager->setBaseUrl($baseDir);
         $builder = $packager->req($modules);
 
-        file_put_contents($filename, $builder->output());
-
+        file_put_contents($filename);
     }
 
     public function clearModuleSetCache($modules)

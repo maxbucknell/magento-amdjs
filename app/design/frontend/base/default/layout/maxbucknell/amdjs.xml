@@ -12,5 +12,8 @@
 
           </block>
         </reference>
+        <reference name="amdjs_modules">
+          <action method="addModule"><module>b</module></action>
+        </reference>
     </default>
 </layout>
