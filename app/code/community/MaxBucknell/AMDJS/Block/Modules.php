@@ -10,7 +10,7 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
     {
         parent::_construct();
         $this->_modules = array();
-        $this->setTemplate('redbox/modules/loader.phtml');
+        $this->setTemplate('maxbucknell/amdjs/modules.phtml');
     }
 
     public function addModule ($moduleName)
@@ -23,7 +23,6 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
         unset($this->_modules[$moduleName]);
     }
 
-
     protected function _beforeToHtml()
     {
         $helper = Mage::helper('boxes');
@@ -32,9 +31,7 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
             $helper->cacheModuleSet($this->_modules);
         }
 
-        $this->assign('requireJSUrl', $this->getJsUrl('js/lib/require.js'));
-
-        $filename = $helper->getModuleSetFilename($this->_modules);
-        $this->assign('compiledScript', $helper->getModuleSetURL);
+        $this->assign('requireJSUrl', $this->getJsUrl('maxbucknell/amdjs/lib/require-2.1.9.js'));
+        $this->assign('compiledScriptURL', $helper->getModuleSetURL());
     }
 }
