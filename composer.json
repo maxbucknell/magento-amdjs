@@ -19,8 +19,7 @@
       ["app/design/frontend/base/default/layout/maxbucknell/amdjs.xml", "app/design/frontend/base/default/layout/maxbucknell/amdjs.xml"],
       ["app/design/frontend/base/default/template/maxbucknell/amdjs", "app/design/frontend/base/default/template/maxbucknell/amdjs"],
       ["app/etc/modules/MaxBucknell_AMDJS.xml", "app/etc/modules/MaxBucknell_AMDJS.xml"],
-      ["js/maxbucknell/amdjs", "js/maxbucknell/amdjs"],
-      ["media/boxes-cache", "media/boxes-cache"]
+      ["js/maxbucknell/amdjs", "js/maxbucknell/amdjs"]
     ]
   }
 }
