@@ -21,7 +21,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getBuiltFileName($modules)
     {
-        return $this->getBuiltBaseDir().DS.$this->_getModuleHash($modules).'.js'
+        return $this->getBuiltBaseDir().DS.$this->_getModuleHash($modules).'.js';
     }
 
     public function getBuiltBaseUrl()
