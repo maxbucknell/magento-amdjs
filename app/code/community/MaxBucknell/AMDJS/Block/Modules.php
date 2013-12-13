@@ -32,6 +32,6 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
         }
 
         $this->assign('requireJSUrl', $this->getJsUrl('maxbucknell/amdjs/lib/require-2.1.9.js'));
-        $this->assign('compiledScriptURL', $helper->getModuleSetURL());
+        $this->assign('compiledScriptURL', $helper->getBuiltFileUrl($modules));
     }
 }
