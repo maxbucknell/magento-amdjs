@@ -26,7 +26,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getBuiltBaseUrl()
     {
-        return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).DS.'amd-cache';
+        return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).DS.'amdjs-cache';
     }
 
     public function getBuiltFileUrl($modules)
@@ -62,7 +62,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isModuleSetCached($modules)
     {
-        return true;
+        return false;
 
         $hash = $this->_hashModuleSet($modules);
         return $this->_loadCache($hash) !== false;
