@@ -3,7 +3,6 @@
     <default>
         <reference name="head">
           <block name="amdjs_modules" type="MaxBucknell_AMDJS/modules">
-            <action method="addModule"><module>b</module></action>
           </block>
         </reference>
     </default>
