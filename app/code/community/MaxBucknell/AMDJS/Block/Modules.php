@@ -25,7 +25,7 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
 
     protected function _beforeToHtml()
     {
-        $helper = Mage::helper('boxes');
+        $helper = Mage::helper('MaxBucknell_AMDJS');
 
         if (!$helper->isModuleSetCached($this->_modules)) {
             $helper->cacheModuleSet($this->_modules);
