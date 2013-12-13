@@ -2,18 +2,9 @@
 <layout version="2.0.0">
     <default>
         <reference name="head">
-          <action method="addItem">
-            <type>skin_js</type>
-            <item>js/lib/modernizr.js</item>
-          </action>
-        </reference>
-        <reference name="before_body_end">
           <block name="amdjs_modules" type="MaxBucknell_AMDJS/modules">
-
+            <action method="addModule"><module>b</module></action>
           </block>
-        </reference>
-        <reference name="amdjs_modules">
-          <action method="addModule"><module>b</module></action>
         </reference>
     </default>
 </layout>

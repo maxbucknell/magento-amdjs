@@ -16,7 +16,7 @@
         <layout>
             <updates>
                 <MaxBucknell_AMDJS>
-                    <file>modules.xml</file>
+                    <file>maxbucknell/amdjs.xml</file>
                 </MaxBucknell_AMDJS>
             </updates>
         </layout>
