@@ -25,9 +25,3 @@ Then, in the layout xml, simply include the modules you need:
 Then, when the page loads, the modules will be collected, and compiled into one file along with the dependencies. This file will be loaded in the `before_body_end` block.
 
 This system uses require.js as its loader of choice, but no asynchronous calls will be made.
-
-## Todo
-
-[ ] Add minification when not in developer mode
-[ ] Add more features from require.js
-[ ] Make path locations a config option
