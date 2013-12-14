@@ -113,6 +113,11 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/cacheDisabled') == 'true';
     }
 
+    protected function _isMinificationDisabled()
+    {
+        return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/minificationDisabled') == 'true';
+    }
+
     /**
      * Compile a set of modules.
      *
@@ -132,7 +137,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
-        if (!Mage::getIsDeveloperMode()) {
+        if (!$this->isMinificationDisabled()) {
             $output = Minifier::minify($output);
         }
 

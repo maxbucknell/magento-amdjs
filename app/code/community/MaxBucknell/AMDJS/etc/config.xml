@@ -29,6 +29,7 @@
             <settings>
                 <sourceBaseDir>js/maxbucknell/amdjs/modules</sourceBaseDir>
                 <cacheDisabled>true</cacheDisabled>
+                <minificationDisabled>true</minificationDisabled>
             </settings>
         </MaxBucknell_AMDJS>
     </default>
