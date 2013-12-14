@@ -29,7 +29,9 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getSourceBaseDir()
     {
-        return Mage::getBaseDir().DS.'js'.DS.'maxbucknell'.DS.'amdjs'.DS.'modules';
+        $basePath = Mage::getBaseDir();
+        $configOption = Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/sourceBaseDir');
+        return $basePath.DS.$configOption;
     }
 
     /**
