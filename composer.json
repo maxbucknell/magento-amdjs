@@ -21,7 +21,7 @@
       ["app/etc/modules/MaxBucknell_AMDJS.xml", "app/etc/modules/MaxBucknell_AMDJS.xml"],
       ["js/maxbucknell/amdjs", "js/maxbucknell/amdjs"],
       ["lib/amd-packager-php", "lib/amd-packager-php"],
-      ["lib/JShrink, lib/JShrink"]
+      ["lib/JShrink", "lib/JShrink"]
     ]
   }
 }
