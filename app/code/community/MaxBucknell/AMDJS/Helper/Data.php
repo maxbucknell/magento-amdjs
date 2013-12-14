@@ -127,7 +127,9 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
             $output = Minifier::minify($output);
         }
 
-        file_put_contents($filename, $output);
+        if (file_put_contents($filename, $output) === false) {
+            throw new Exception('The built file could not be written to.');
+        }
     }
 
     /**
@@ -138,8 +140,6 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isModuleSetCached($modules)
     {
-        return false;
-
         $hash = $this->_hashModuleSet($modules);
         return $this->_loadCache($hash) !== false;
     }
@@ -152,6 +152,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     public function cacheModuleSet($modules)
     {
         $this->_build($modules);
+        $this->_saveCache($hash, $hash, array('amdjs'));
     }
 
     /**
