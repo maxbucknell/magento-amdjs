@@ -26,6 +26,16 @@ Then, when the page loads, the modules will be collected, and compiled into one 
 
 This system uses require.js as its loader of choice, but no asynchronous http requests will be made. This module compiles all modules and puts them into one file that loads at the end of the body. Like a best practice.
 
+## Config Options
+
+Currently there is no painless, upgradeproof way of configuring this thing. I suppose you could configure it in some other xml file, but that's not exactly clean. I'll be adding an admin interface at some point.
+
+Configuration can be done via the module's config.xml, though. The options you have are to disable minification and caching when not in developer mode, and to add path aliases, similar to those found in require.js.
+
+The minifation and caching can be disabled by giving the xpaths `config/default/MaxBucknell_AMDJS/settings/disableMinification` and `disableCaching` values of `true`.
+
+Path aliases are configured under the xpath `config/default/MaxBucknell_AMDJS/settings/aliases`. The module will look at every child node, and search each one of those for a `from` node and a `to` node, using those to map between module names and the filesystem.
+
 ## Contributions
 
 I welcome them, of any kind. I write kinda sucky PHP code, and I'm quite new to Magento, which means there are a lot of things I might not be doing the correct way, or whatever. It's a complicated system, or something. So please help me out here :-)
