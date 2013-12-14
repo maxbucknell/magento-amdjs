@@ -135,6 +135,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
         $output = $builder->output();
 
+        // This actually loads the modules and makes them run.
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
         if (!$this->isMinificationDisabled()) {
