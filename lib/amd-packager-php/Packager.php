@@ -93,7 +93,7 @@ class Packager {
 		// replace aliases
 		foreach ($this->_alias as $alias => $url){
 			if (strpos($id, $alias) ==  0) {
-				str_replace($alias, $url, $id);
+				$id = str_replace($alias, $url, $id);
 				break;
 			} else {
 				continue;
@@ -133,10 +133,10 @@ class Packager {
 
 		$deps = array();
 		$_id = '';
-		$amd = $amd && (strpos($content, 'define') !== false);
+		$amd = (strpos($content, 'define') !== false);
+		$packager = '';
 
 		if ($amd){
-
 			$info = $this->_analyze($content);
 			$code = $info['code'];
 			$arrays = $info['arrays'];

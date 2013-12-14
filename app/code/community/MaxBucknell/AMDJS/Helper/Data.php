@@ -155,7 +155,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         $aliases = array();
 
         foreach(Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/aliases')->children() as $alias) {
-            $aliases[] = array($alias->from, $alias->to);
+            $aliases[] = array((string)$alias->from, (string)$alias->to);
         }
 
         return $aliases;
@@ -187,7 +187,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         // This actually loads the modules and makes them run.
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
-        if (!$this->isMinificationDisabled()) {
+        if (!$this->_isMinificationDisabled()) {
             $output = Minifier::minify($output);
         }
 
