@@ -10,6 +10,15 @@
 require_once(Mage::getBaseDir('lib').DS.'amd-packager-php/Packager.php');
 
 /**
+ * A PHP JavaScript Minifier.
+ *
+ * We only want it to load when not in developer mode.
+ */
+if (!Mage::getIsDeveloperMode()) {
+    require_once(Mage::getBaseDir('lib').DS.'JShrink/Minifier.php');
+}
+
+/**
  * Functionality to compile modules with dependencies.
  */
 class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
@@ -108,7 +117,13 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         $packager->setBaseUrl($this->getSourceBaseDir());
         $builder = $packager->req($modules);
 
-        $output = $builder->output()."\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
+        $output = $builder->output()
+
+        $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
+
+        if (!Mage::getIsDeveloperMode()) {
+            $output = Minifier::minify($output);
+        }
 
         file_put_contents($filename, $output);
     }
