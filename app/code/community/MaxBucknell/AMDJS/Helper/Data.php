@@ -117,7 +117,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         $packager->setBaseUrl($this->getSourceBaseDir());
         $builder = $packager->req($modules);
 
-        $output = $builder->output()
+        $output = $builder->output();
 
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
