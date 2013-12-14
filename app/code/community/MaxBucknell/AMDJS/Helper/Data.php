@@ -105,6 +105,15 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Is cache disabled, either by developer mode or in config?
+     * @return type
+     */
+    protected function _isCacheDisabled()
+    {
+        return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/cacheDisabled') == 'true';
+    }
+
+    /**
      * Compile a set of modules.
      *
      * @param array $modules
@@ -140,6 +149,10 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isModuleSetCached($modules)
     {
+        if ($this->_isCacheDisabled()) {
+            return false;
+        }
+
         $hash = $this->_getModuleHash($modules);
         return $this->_loadCache($hash) !== false;
     }
@@ -147,10 +160,22 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Compile and cache a set of modules.
      *
+     * Module caching works by simply storing the hash of the modules.
+     * If that value is stored in the cache, then we assume that the
+     * correct file is written, and the filename is returned.
+     *
+     * If a cache is invalidated, it can be cleared, or just cached
+     * again to be built. By default, no life is specified for the cache,
+     * but any change in modules will change the cache.
+     *
+     * By default, in developer mode, cache is turned off, but can also
+     * be disabled in config.
+     *
      * @param array $modules
      */
     public function cacheModuleSet($modules)
     {
+
         $hash = $this->_getModuleHash($modules);
         $this->_build($modules);
         $this->_saveCache($hash, $hash, array('amdjs'));
