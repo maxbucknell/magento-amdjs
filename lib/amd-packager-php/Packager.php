@@ -101,7 +101,7 @@ class Packager {
 		}
 
 
-		$filename = Path::resolve($this->_baseurl, $filename).'.js';
+		$filename = Path::resolve($this->_baseurl, $id).'.js';
 
 		if (isset($this->_files[$filename])) {
 			return;
@@ -134,7 +134,7 @@ class Packager {
 		$deps = array();
 		$_id = '';
 		$amd = (strpos($content, 'define') !== false);
-		$packager = '';
+		$package = '';
 
 		if ($amd){
 			$info = $this->_analyze($content);
