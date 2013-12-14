@@ -86,30 +86,26 @@ class Packager {
 	}
 
 	protected function _req($id){
-		if (in_array($id, $this->_skip)) return;
-		if (strpos($id, '!') !== false) return;
+		if (in_array($id, $this->_skip) || strpos($id, '!') !== false) {
+			return;
+		}
 
-		$filename = $id;
-		$extension = Path::extname($filename);
-		$amd = !in_array($extension, array('.js', '.css'/* more? */));
-		if ($amd) $filename .= '.js';
-
-		$package = '';
+		// replace aliases
 		foreach ($this->_alias as $alias => $url){
-			if ($id == $alias){
-				$filename = $url;
+			if (strpos($id, $alias) ==  0) {
+				$id = str_replace($alias, $url, $id);
+				break;
 			} else {
-				$len = strlen($alias);
-				if (substr($filename, 0, $len) == $alias){
-					$filename = Path::resolve($url, substr($filename, $len + 1));
-					$package = $alias;
-					break;
-				}
+				continue;
 			}
 		}
 
-		$filename = Path::resolve($this->_baseurl, $filename);
-		if (isset($this->_files[$filename])) return;
+
+		$filename = Path::resolve($this->_baseurl, $id).'.js';
+
+		if (isset($this->_files[$filename])) {
+			return;
+		}
 
 		/*
 		Syntax:
@@ -137,10 +133,10 @@ class Packager {
 
 		$deps = array();
 		$_id = '';
-		$amd = $amd && (strpos($content, 'define') !== false);
+		$amd = (strpos($content, 'define') !== false);
+		$package = '';
 
 		if ($amd){
-
 			$info = $this->_analyze($content);
 			$code = $info['code'];
 			$arrays = $info['arrays'];

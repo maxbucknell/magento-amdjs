@@ -119,6 +119,49 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Return the aliases specified in config.
+     *
+     * Aliases allow nicer looking module names, while maintaining a
+     * more intricate directory structure. Perhaps one is using bower
+     * to load dependencies, but grows weary of typing the full path
+     * to each module. Simply specify an alias in config.xml, like so:
+     *
+     *     <settings>
+     *         ...
+     *         <aliases>
+     *             <alias_name> <!-- completely arbitrary -->
+     *                 <from>jquery</from>
+     *                 <to>bower_components/jquery/jquery</to>
+     *             </alias_name>
+     *         </aliases>
+     *     </settings>
+     *
+     * Then, in your scripts, you can require jquery like so:
+     *
+     *     define(['jquery'], function ({
+     *         // $(some code)
+     *     }));
+     *
+     * and this will map to the actual location of jQuery. Neat!
+     *
+     * The method returns a two dimensional array, where the first
+     * element of each row is the from node, and the second, the to
+     * node.
+     *
+     * @return array
+     */
+    protected function _getAliases()
+    {
+        $aliases = array();
+
+        foreach(Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/aliases')->children() as $alias) {
+            $aliases[] = array((string)$alias->from, (string)$alias->to);
+        }
+
+        return $aliases;
+    }
+
+    /**
      * Compile a set of modules.
      *
      * @param array $modules
@@ -131,14 +174,20 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
         $packager = new Packager();
         $packager->setBaseUrl($this->getSourceBaseDir());
+
+        foreach ($this->_getAliases() as $alias) {
+            $packager->addAlias($alias[0], $alias[1]);
+        }
+
         $builder = $packager->req($modules);
+
 
         $output = $builder->output();
 
         // This actually loads the modules and makes them run.
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
-        if (!$this->isMinificationDisabled()) {
+        if (!$this->_isMinificationDisabled()) {
             $output = Minifier::minify($output);
         }
 
