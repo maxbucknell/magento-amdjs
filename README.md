@@ -24,7 +24,7 @@ Then, in the layout xml, simply include the modules you need:
 
 Then, when the page loads, the modules will be collected, and compiled into one file along with the dependencies. This file will be loaded in the `before_body_end` block.
 
-This system uses require.js as its loader of choice, but no asynchronous calls will be made.
+This system uses require.js as its loader of choice, but no asynchronous http requests will be made. This module compiles all modules and puts them into one file that loads at the end of the body. Like a best practice.
 
 ## Contributions
 
