@@ -25,3 +25,7 @@ Then, in the layout xml, simply include the modules you need:
 Then, when the page loads, the modules will be collected, and compiled into one file along with the dependencies. This file will be loaded in the `before_body_end` block.
 
 This system uses require.js as its loader of choice, but no asynchronous calls will be made.
+
+## Contributions
+
+I welcome them, of any kind. I write kinda sucky PHP code, and I'm quite new to Magento, which means there are a lot of things I might not be doing the correct way, or whatever. It's a complicated system, or something. So please help me out here :-)
