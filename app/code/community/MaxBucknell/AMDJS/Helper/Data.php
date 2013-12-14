@@ -140,7 +140,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isModuleSetCached($modules)
     {
-        $hash = $this->_hashModuleSet($modules);
+        $hash = $this->_getModuleHash($modules);
         return $this->_loadCache($hash) !== false;
     }
 
@@ -151,6 +151,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function cacheModuleSet($modules)
     {
+        $hash = $this->_getModuleHash($modules);
         $this->_build($modules);
         $this->_saveCache($hash, $hash, array('amdjs'));
     }
