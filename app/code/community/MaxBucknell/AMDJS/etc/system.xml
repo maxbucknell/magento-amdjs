@@ -17,7 +17,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>Relative to the web root.</comment>
+                            <comment><![CDATA[
+                                <p>Relative to the web root.
+                            ]]></comment>
                         </sources>
                         <aliases translate="label">
                             <label>Module Aliases</label>
@@ -26,7 +28,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>Place a JSON object here detailing path mappings. See require.js docs for more details.</comment>
+                            <comment><![CDATA[
+                                <p>Place a JSON object here detailing path mappings. See require.js docs for more details.</p>
+                            ]]></comment>
                         </aliases>
                         <minify translate="label">
                             <label>Enable minification</label>
@@ -44,7 +48,11 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>If you want to use a custom minifier, give the name of the command here.</comment>
+                            <comment><![CDATA[
+                                <p>If you want to use a custom minifier, give the name of the command here. Use {{file}} as a placeholder for the input. The command should send its output to stdout.</p>
+
+                                <p>For example, to use the excellent uglify-js2 minifier, one could enter "uglifyjs2 {{file}} -mc"</p>
+                            ]]></comment>
                         </minifier>
                         <cache translate="label">
                             <label>Enable caching</label>

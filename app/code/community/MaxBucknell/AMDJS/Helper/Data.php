@@ -80,21 +80,39 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->getBuiltBaseUrl().DS.$this->_getModuleHash($modules).'.js';
     }
 
+    /**
+     * Minify the script.
+     *
+     * If a minifier has been set, then it will use that one, which
+     * allows for some pretty awesome customisation. Otherwise, it's
+     * some PHP minifier I found on the internet.
+     *
+     * @param string $input The script source to minify
+     * @return string
+     */
     protected function _minify($input)
     {
         $output = null;
-        $minifier = Mage::getStoreConfig('dev/amdjs/minifier')
+        $minifierCommand = Mage::getStoreConfig('dev/amdjs/minifier');
 
-        if ($minifier != '') {
-            $filename = Mage::getBaseDir().'var'.DS.'input.js';
-            file_put_contents($filename, $output);
+        if ($minifierCommand != '') {
+            $filename = Mage::getBaseDir().DS.'var'.DS.'input.js';
+            file_put_contents($filename, $input);
 
-            $output = shell_exec($minifier.' '.$filename);
+            if (strpos($minifierCommand, '{{file}}') !== false) {
+                $minifierCommand = str_replace('{{file}}', $filename, $minifierCommand);
+            } else {
+                $minifierCommand.= ' '.$filename;
+            }
+
+            $output = shell_exec($minifierCommand);
         }
 
         if ($output == null) {
-            return Minifier::minify($input);
+            $output =  Minifier::minify($input);
         }
+
+        return $output;
     }
 
     /**
