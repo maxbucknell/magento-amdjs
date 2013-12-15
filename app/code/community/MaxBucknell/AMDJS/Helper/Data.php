@@ -11,12 +11,8 @@ require_once(Mage::getBaseDir('lib').DS.'amd-packager-php/Packager.php');
 
 /**
  * A PHP JavaScript Minifier.
- *
- * We only want it to load when not in developer mode.
  */
-if (!Mage::getIsDeveloperMode()) {
-    require_once(Mage::getBaseDir('lib').DS.'JShrink/Minifier.php');
-}
+require_once(Mage::getBaseDir('lib').DS.'JShrink/Minifier.php');
 
 /**
  * Functionality to compile modules with dependencies.
@@ -30,7 +26,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSourceBaseDir()
     {
         $basePath = Mage::getBaseDir();
-        $configOption = Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/sourceBaseDir');
+        $configOption = Mage::getStoreConfig('dev/amdjs/sources');
         return $basePath.DS.$configOption;
     }
 
@@ -85,6 +81,41 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Minify the script.
+     *
+     * If a minifier has been set, then it will use that one, which
+     * allows for some pretty awesome customisation. Otherwise, it's
+     * some PHP minifier I found on the internet.
+     *
+     * @param string $input The script source to minify
+     * @return string
+     */
+    protected function _minify($input)
+    {
+        $output = null;
+        $minifierCommand = Mage::getStoreConfig('dev/amdjs/minifier');
+
+        if ($minifierCommand != '') {
+            $filename = Mage::getBaseDir().DS.'var'.DS.'input.js';
+            file_put_contents($filename, $input);
+
+            if (strpos($minifierCommand, '{{file}}') !== false) {
+                $minifierCommand = str_replace('{{file}}', $filename, $minifierCommand);
+            } else {
+                $minifierCommand.= ' '.$filename;
+            }
+
+            $output = shell_exec($minifierCommand);
+        }
+
+        if ($output == null) {
+            $output =  Minifier::minify($input);
+        }
+
+        return $output;
+    }
+
+    /**
      * Generate a unique hash of a set of modules.
      * @param array $modules
      * @return string
@@ -105,17 +136,29 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Is cache disabled, either by developer mode or in config?
-     * @return type
+     * Is cache enabled, either by developer mode or in config?
+     * @return boolean
      */
-    protected function _isCacheDisabled()
+    protected function _isCacheEnabled()
     {
-        return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/cacheDisabled') == 'true';
+        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode()) {
+            return false;
+        } else {
+            return Mage::getStoreConfig('dev/amdjs/cache');
+        }
     }
 
-    protected function _isMinificationDisabled()
+    /**
+     * Is minification enabled, either by developer mode or in config?
+     * @return boolean
+     */
+    protected function _isMinificationEnabled()
     {
-        return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/minificationDisabled') == 'true';
+        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode()) {
+            return false;
+        } else {
+            return Mage::getStoreConfig('dev/amdjs/minify');
+        }
     }
 
     /**
@@ -124,17 +167,13 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      * Aliases allow nicer looking module names, while maintaining a
      * more intricate directory structure. Perhaps one is using bower
      * to load dependencies, but grows weary of typing the full path
-     * to each module. Simply specify an alias in config.xml, like so:
+     * to each module. Simply specify an alias in the backend, under
+     * system/config/developer/amd optimization settings/aliases,
+     * like so:
      *
-     *     <settings>
-     *         ...
-     *         <aliases>
-     *             <alias_name> <!-- completely arbitrary -->
-     *                 <from>jquery</from>
-     *                 <to>bower_components/jquery/jquery</to>
-     *             </alias_name>
-     *         </aliases>
-     *     </settings>
+     *     {
+     *         "jquery": "bower_components/jquery/jquery"
+     *     }
      *
      * Then, in your scripts, you can require jquery like so:
      *
@@ -144,21 +183,16 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * and this will map to the actual location of jQuery. Neat!
      *
-     * The method returns a two dimensional array, where the first
-     * element of each row is the from node, and the second, the to
-     * node.
+     * The method returns an associative array, where the key is
+     * the alias, and the value the desired value.
      *
      * @return array
      */
     protected function _getAliases()
     {
-        $aliases = array();
+        $aliasesJSON = Mage::getStoreConfig('dev/amdjs/aliases');
 
-        foreach(Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/aliases')->children() as $alias) {
-            $aliases[] = array((string)$alias->from, (string)$alias->to);
-        }
-
-        return $aliases;
+        return Mage::helper('core')->jsonDecode($aliasesJSON);
     }
 
     /**
@@ -175,8 +209,8 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         $packager = new Packager();
         $packager->setBaseUrl($this->getSourceBaseDir());
 
-        foreach ($this->_getAliases() as $alias) {
-            $packager->addAlias($alias[0], $alias[1]);
+        foreach ($this->_getAliases() as $from => $to) {
+            $packager->addAlias($from, $to);
         }
 
         $builder = $packager->req($modules);
@@ -187,8 +221,8 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         // This actually loads the modules and makes them run.
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
-        if (!$this->_isMinificationDisabled()) {
-            $output = Minifier::minify($output);
+        if ($this->_isMinificationEnabled()) {
+            $output = $this->_minify($output);
         }
 
         if (file_put_contents($filename, $output) === false) {
@@ -204,12 +238,14 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isModuleSetCached($modules)
     {
-        if ($this->_isCacheDisabled()) {
+        if ($this->_isCacheEnabled()) {
+            $hash = $this->_getModuleHash($modules);
+            return $this->_loadCache($hash) !== false;
+        } else {
             return false;
         }
 
-        $hash = $this->_getModuleHash($modules);
-        return $this->_loadCache($hash) !== false;
+
     }
 
     /**
@@ -233,7 +269,10 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
         $hash = $this->_getModuleHash($modules);
         $this->_build($modules);
-        $this->_saveCache($hash, $hash, array('amdjs'));
+
+        if ($this->_isCacheEnabled()) {
+            $this->_saveCache($hash, $hash, array('amdjs'));
+        }
     }
 
     /**
