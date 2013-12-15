@@ -26,13 +26,4 @@
             </updates>
         </layout>
     </frontend>
-    <default>
-        <MaxBucknell_AMDJS>
-            <settings>
-                <sourceBaseDir>js/maxbucknell/amdjs/modules</sourceBaseDir>
-                <cacheDisabled>false</cacheDisabled>
-                <minificationDisabled>false</minificationDisabled>
-            </settings>
-        </MaxBucknell_AMDJS>
-    </default>
 </config>
