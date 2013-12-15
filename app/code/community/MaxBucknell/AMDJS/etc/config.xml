@@ -27,12 +27,14 @@
         </layout>
     </frontend>
     <default>
-        <MaxBucknell_AMDJS>
-            <settings>
-                <sourceBaseDir>js/maxbucknell/amdjs/modules</sourceBaseDir>
-                <cacheDisabled>false</cacheDisabled>
-                <minificationDisabled>false</minificationDisabled>
-            </settings>
-        </MaxBucknell_AMDJS>
+        <dev>
+            <amdjs>
+                <sources>js/maxbucknell/amdjs/modules</sources>
+                <cache>0</cache>
+                <minify>0</minify>
+                <minifier></minifier>
+                <devMode>1</devMode>
+            </amdjs>
+        </dev>
     </default>
 </config>
