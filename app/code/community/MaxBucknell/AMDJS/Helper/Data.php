@@ -11,12 +11,8 @@ require_once(Mage::getBaseDir('lib').DS.'amd-packager-php/Packager.php');
 
 /**
  * A PHP JavaScript Minifier.
- *
- * We only want it to load when not in developer mode.
  */
-if (!Mage::getIsDeveloperMode()) {
-    require_once(Mage::getBaseDir('lib').DS.'JShrink/Minifier.php');
-}
+require_once(Mage::getBaseDir('lib').DS.'JShrink/Minifier.php');
 
 /**
  * Functionality to compile modules with dependencies.
@@ -82,6 +78,23 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     public function getBuiltFileUrl($modules)
     {
         return $this->getBuiltBaseUrl().DS.$this->_getModuleHash($modules).'.js';
+    }
+
+    protected function _minify($input)
+    {
+        $output = null;
+        $minifier = Mage::getStoreConfig('dev/amdjs/minifier')
+
+        if ($minifier != '') {
+            $filename = Mage::getBaseDir().'var'.DS.'input.js';
+            file_put_contents($filename, $output);
+
+            $output = shell_exec($minifier.' '.$filename);
+        }
+
+        if ($output == null) {
+            return Minifier::minify($input);
+        }
     }
 
     /**
@@ -191,7 +204,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
         if ($this->_isMinificationEnabled()) {
-            $output = Minifier::minify($output);
+            $output = $this->_minify($output);
         }
 
         if (file_put_contents($filename, $output) === false) {

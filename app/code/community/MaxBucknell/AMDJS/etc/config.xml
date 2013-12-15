@@ -32,6 +32,7 @@
                 <sources>js/maxbucknell/amdjs/modules</sources>
                 <cache>0</cache>
                 <minify>0</minify>
+                <minifier></minifier>
                 <devMode>1</devMode>
             </amdjs>
         </dev>
