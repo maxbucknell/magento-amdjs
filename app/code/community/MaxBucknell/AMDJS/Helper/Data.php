@@ -105,17 +105,29 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Is cache disabled, either by developer mode or in config?
-     * @return type
+     * Is cache enabled, either by developer mode or in config?
+     * @return boolean
      */
-    protected function _isCacheDisabled()
+    protected function _isCacheEnabled()
     {
-        return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/cacheDisabled') == 'true';
+        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode())
+            return false;
+        } else {
+            return Mage::getStoreConfig('dev/amdjs/cache');
+        }
     }
 
-    protected function _isMinificationDisabled()
+    /**
+     * Is minification enabled, either by developer mode or in config?
+     * @return boolean
+     */
+    protected function _isMinificationEnabled()
     {
-        return Mage::getIsDeveloperMode() || (string)Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/minificationDisabled') == 'true';
+        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode())
+            return false;
+        } else {
+            return Mage::getStoreConfig('dev/amdjs/minify');
+        }
     }
 
     /**
@@ -124,17 +136,13 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      * Aliases allow nicer looking module names, while maintaining a
      * more intricate directory structure. Perhaps one is using bower
      * to load dependencies, but grows weary of typing the full path
-     * to each module. Simply specify an alias in config.xml, like so:
+     * to each module. Simply specify an alias in the backend, under
+     * system/config/developer/amd optimization settings/aliases,
+     * like so:
      *
-     *     <settings>
-     *         ...
-     *         <aliases>
-     *             <alias_name> <!-- completely arbitrary -->
-     *                 <from>jquery</from>
-     *                 <to>bower_components/jquery/jquery</to>
-     *             </alias_name>
-     *         </aliases>
-     *     </settings>
+     *     {
+     *         "jquery": "bower_components/jquery/jquery"
+     *     }
      *
      * Then, in your scripts, you can require jquery like so:
      *
@@ -144,21 +152,16 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * and this will map to the actual location of jQuery. Neat!
      *
-     * The method returns a two dimensional array, where the first
-     * element of each row is the from node, and the second, the to
-     * node.
+     * The method returns an associative array, where the key is
+     * the alias, and the value the desired value.
      *
      * @return array
      */
     protected function _getAliases()
     {
-        $aliases = array();
+        $aliasesJSON = Mage::getStoreConfig('dev/amdjs/aliases');
 
-        foreach(Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/aliases')->children() as $alias) {
-            $aliases[] = array((string)$alias->from, (string)$alias->to);
-        }
-
-        return $aliases;
+        return Mage::helper('core')->jsonDecode($aliasesJSON);
     }
 
     /**
