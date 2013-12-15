@@ -3,13 +3,22 @@
         <dev>
             <groups>
                 <amdjs translate="label">
-                    <label>JavaScript Settings</label>
+                    <label>AMDJS Optimization Settings</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>101</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
+                        <aliases translate="label">
+                            <label>Module Aliases</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Place a JSON object here detailing path mappings. See require.js docs for more details</comment>
+                        </aliases>
                         <minify translate="label">
                             <label>Enable minification</label>
                             <frontend_type>select</frontend_type>
