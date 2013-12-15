@@ -30,7 +30,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSourceBaseDir()
     {
         $basePath = Mage::getBaseDir();
-        $configOption = Mage::getConfig()->getNode('default/MaxBucknell_AMDJS/settings/sourceBaseDir');
+        $configOption = Mage::getStoreConfig('dev/amdjs/sources');
         return $basePath.DS.$configOption;
     }
 
@@ -110,7 +110,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     protected function _isCacheEnabled()
     {
-        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode())
+        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode()) {
             return false;
         } else {
             return Mage::getStoreConfig('dev/amdjs/cache');
@@ -123,7 +123,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     protected function _isMinificationEnabled()
     {
-        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode())
+        if (Mage::getStoreConfig('dev/amdjs/devMode') && Mage::getIsDeveloperMode()) {
             return false;
         } else {
             return Mage::getStoreConfig('dev/amdjs/minify');
@@ -178,8 +178,8 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         $packager = new Packager();
         $packager->setBaseUrl($this->getSourceBaseDir());
 
-        foreach ($this->_getAliases() as $alias) {
-            $packager->addAlias($alias[0], $alias[1]);
+        foreach ($this->_getAliases() as $from => $to) {
+            $packager->addAlias($from, $to);
         }
 
         $builder = $packager->req($modules);

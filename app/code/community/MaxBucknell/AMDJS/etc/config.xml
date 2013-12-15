@@ -29,7 +29,7 @@
     <default>
         <dev>
             <amdjs>
-                <sourceBaseDir>js/maxbucknell/amdjs/modules</sourceBaseDir>
+                <sources>js/maxbucknell/amdjs/modules</sources>
                 <cache>0</cache>
                 <minify>0</minify>
                 <devMode>1</devMode>
