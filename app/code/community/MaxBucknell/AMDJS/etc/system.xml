@@ -1,18 +1,14 @@
 <config>
-    <default>
-        <MaxBucknell_AMDJS>
-            <settings>
-                <sourceBaseDir>js/maxbucknell/amdjs/modules</sourceBaseDir>
-                <cache>false</cache>
-                <minify>false</minify>
-                <devMode>true</devMode>
-            </settings>
-        </MaxBucknell_AMDJS>
-    </default>
     <sections>
         <dev>
             <groups>
-                <js translate="label">
+                <amdjs translate="label">
+                    <label>JavaScript Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>101</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
                     <fields>
                         <minify translate="label">
                             <label>Enable minification</label>
@@ -42,7 +38,7 @@
                             <show_in_store>1</show_in_store>
                         </devMode>
                     </fields>
-                </js>
+                </amdjs>
             </groups>
         </dev>
     </sections>

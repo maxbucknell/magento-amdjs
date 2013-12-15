@@ -26,4 +26,14 @@
             </updates>
         </layout>
     </frontend>
+    <default>
+        <dev>
+            <amdjs>
+                <sourceBaseDir>js/maxbucknell/amdjs/modules</sourceBaseDir>
+                <cache>0</cache>
+                <minify>0</minify>
+                <devMode>1</devMode>
+            </amdjs>
+        </dev>
+    </default>
 </config>
