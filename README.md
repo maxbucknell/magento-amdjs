@@ -4,7 +4,7 @@ This module enables the use of AMD JavaScript modules with Magento.
 
 ## Why
 
-If you're wondering why AMD, may I [refer you elsewhere](http://requirejs.org/docs/whyamd.html)?
+If you're wondering why AMD, may I [refer you elsewhere][1]?
 
 It's certainly possible to let require.js take care of module loading, but in a production environment, it fires off a lot of extra http requests, which nobody really wants.
 
@@ -12,7 +12,7 @@ The r.js optimiser does a great job of this, and this module is designed to repl
 
 ## How it works
 
-The modules should be placed in the directory `js/maxbucknell/amdjs/modules`, and all modules should be named relative to that location.
+You place your modules in a directory, and write as if you were using require.js with no optimisation.
 
 Then, in the layout xml, simply include the modules you need:
 
@@ -24,11 +24,11 @@ Then, in the layout xml, simply include the modules you need:
 
 Then, when the page loads, the modules will be collected, and compiled into one file along with the dependencies. This file will be loaded in the `before_body_end` block.
 
-This system uses require.js as its loader of choice, but no asynchronous http requests will be made. This module compiles all modules and puts them into one file that loads at the end of the body. Like a best practice.
+This system uses require.js as its loader of choice, but no asynchronous http requests will be made. This module compiles all modules and puts them into one file that loads at the end of the body. A little bit like a best practice.
 
 ## Config Options
 
-Configuration is done in the backend. It can be found in the developer section of the configuration. The options presented are thus:
+Configuration is done in the backend. It can be found in the developer section of the configuration. The following options are presented:
 
 + ### Module source files location
 
@@ -36,9 +36,11 @@ Configuration is done in the backend. It can be found in the developer section o
 
 + ### Module aliases
 
-  It is possible to configure aliases similar to those in require.js. Really great if you're using a front end package manager like Bower, or if your jQuery is named with a version.
+  It is possible to configure aliases similar to [those in require.js][2]. Really great if you're using a front end package manager like [Bower][3], or if your [jQuery is named with a version][4].
 
   This field takes a JSON object agreeing to the same specification as require.js. My aim was to make transitioning to this as easy as possible.
+
+  The differences is that currently, it is assumed that this is a path relative to the base source files directory. Loading from a remote host or an absolute path relative to the web root is currently not permitted.
 
 + ### Enable minification
 
@@ -48,7 +50,7 @@ Configuration is done in the backend. It can be found in the developer section o
 
   By default, this module ships with a PHP JavaScript minifer called JShrink. But it turns out that the best minifiers are not written in PHP. I didn't want to enforce another runtime on a user, but if you've got node installed, I highly recommend upgrading the minifier.
 
-  Specifically, the hotness at the moment is UglifyJS2. If you've got it installed, here's how you might do it:
+  Specifically, the hotness at the moment is [UglifyJS2][5]. If you've got it installed, here's how you might do it:
 
   > uglifyjs2 {{file}} -mc
 
@@ -58,7 +60,7 @@ Configuration is done in the backend. It can be found in the developer section o
 
 + ### Enable caching
 
-  See "Enable minification"
+  See "[Enable minification][6]"
 
 + ###  Disable caching and minification when in developer mode.
 
@@ -67,3 +69,10 @@ Configuration is done in the backend. It can be found in the developer section o
 ## Contributions
 
 I welcome them, of any kind. I write kinda sucky PHP code, and I'm quite new to Magento, which means there are a lot of things I might not be doing the correct way, or whatever. It's a complicated system, or something. So please help me out here :-)
+
+[1]: http://requirejs.org/docs/whyamd.html
+[2]: http://requirejs.org/docs/api.html#config-paths
+[3]: http://bower.io
+[4]: http://requirejs.org/docs/jquery.html#modulename
+[5]: https://github.com/mishoo/UglifyJS2
+[6]: #enable-minification
