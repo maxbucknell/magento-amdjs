@@ -190,7 +190,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         // This actually loads the modules and makes them run.
         $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
 
-        if (!$this->_isMinificationDisabled()) {
+        if ($this->_isMinificationEnabled()) {
             $output = Minifier::minify($output);
         }
 
@@ -207,12 +207,14 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isModuleSetCached($modules)
     {
-        if ($this->_isCacheDisabled()) {
+        if ($this->_isCacheEnabled()) {
+            $hash = $this->_getModuleHash($modules);
+            return $this->_loadCache($hash) !== false;
+        } else {
             return false;
         }
 
-        $hash = $this->_getModuleHash($modules);
-        return $this->_loadCache($hash) !== false;
+
     }
 
     /**
@@ -236,7 +238,10 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
 
         $hash = $this->_getModuleHash($modules);
         $this->_build($modules);
-        $this->_saveCache($hash, $hash, array('amdjs'));
+
+        if ($this->_isCacheEnabled()) {
+            $this->_saveCache($hash, $hash, array('amdjs'));
+        }
     }
 
     /**
