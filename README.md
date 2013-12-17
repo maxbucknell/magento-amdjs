@@ -10,21 +10,60 @@ It's certainly possible to let require.js take care of module loading, but in a 
 
 The r.js optimiser does a great job of this, and this module is designed to replace it. The problem with the optimiser is that it doesn't allow very easy compilation with Magento projects. One is reduced to parsing the layouts by hand and hoping it's correct. This does it all automatically.
 
-## How it works
+## How
 
-You place your modules in a directory, and write as if you were using require.js with no optimisation.
+The block that runs this show will, in the end, output two JavaScript files. One will be require.js, and the other will be the a big mush of all the modules that are loaded into any one page.
 
-Then, in the layout xml, simply include the modules you need:
+Controlling which modules are loaded into the page is done via the layout xml. The block is defined with a name of `amdjs_modules`. Simply reference this block, and modules can be added, or removed from the page, with the `addModule` and `removeModule` methods, respectively, both of which take a single argument, the module name.
 
-```xml
-<reference name="amdjs_modules">
-    <action method="addModule"><module>my/module/name</action>
-</reference>
+For example. Suppose you have a directory of AMD compliant modules in a directory that you have declared to be the soure files location in the back end. Perhaps it looks like this:
+
+```
+amd
+├── base.js
+├── slider.js
+├── tooltips.js
+└── vendor
+    └── lib.js
 ```
 
-Then, when the page loads, the modules will be collected, and compiled into one file along with the dependencies. This file will be loaded in the `before_body_end` block.
+Say, for the sake of example that base depends on slider and tooltip, which each depend on some vendor/lib module. In this case, a portion of one's local.xml might look like this:
 
-This system uses require.js as its loader of choice, but no asynchronous http requests will be made. This module compiles all modules and puts them into one file that loads at the end of the body. A little bit like a best practice.
+```xml
+<default>
+    <!-- ... -->
+    <reference name="amdjs_modules">
+        <action method="addModule"><module>base</module></action>
+    </reference>
+    <!-- ... -->
+</default>
+```
+
+The base module would then be parsed, its dependencies found, their dependencies found, and so on until all dependencies were listed. Note that this process eliminates duplicates, so although slider and tooltip both depend on the (probably large) vendor/lib, it is only included once.
+
+Then, these files are all concatenated, and saved into a temporary location. If caching is enabled, a note of this location is made, and the modules are not recompiled on each request. If minification is enabled, that step is also performed now.
+
+But it turns out that we don't actually want base to run on the checkout page. We'd better add something else to our layout file.
+
+```xml
+<checkout_index_index>
+    <!-- ... -->
+    <reference name="amdjs_modules">
+        <action method="removeModule"><module>base</module></action>
+    </reference>
+    <!-- ... -->
+</checkout_index_index>
+```
+
+Now, base will not be loaded, nor will its dependencies, unless, of course, some other module needs them. And there we have it. That's the public API, folks. It's a pretty simple interface. It's not actually any harder than Magento's version. But it is better.
+
+## What's Wrong With the Normal Functionality?
+
+By default, Magento has various methods in the `head` block to add JavaScript. Straight away we can identify one problem. Scripts, in general, should not load in the `<head>` of a document. This blocks the page load, and if a few hundred kilobytes of JavaScript have to load before the user sees anything, we know we can do better.
+
+Second, this just loads JavaScript files one after the other. By enforcing the AMD syntax, a certain amount of safety is implied. There's no reason that a second version of jQuery added by a third party module can't overwrite the one you were using. If you've added plugins to that version, you can get some pretty nasty bugs. That's the trouble with global variables, and one of many reasons why they should be avoided.
+
+Helpfully, require.js cries whenever you try to redefine a module that has already been defined. So this can't happen.
 
 ## Config Options
 
@@ -76,3 +115,5 @@ I welcome them, of any kind. I write kinda sucky PHP code, and I'm quite new to 
 [4]: http://requirejs.org/docs/jquery.html#modulename
 [5]: https://github.com/mishoo/UglifyJS2
 [6]: #enable-minification
+[7]: http://requirejs.org
+[8]: https://github.com/jrburke
