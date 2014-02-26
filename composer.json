@@ -10,18 +10,22 @@
       "email": "me@maxbucknell.com"
     }
   ],
-  "require":{
-    "magento-hackathon/magento-composer-installer": "*"
+  "require": {
+    "magento-hackathon/magento-composer-installer": "*",
+    "maxbucknell/php-amdjs": "*",
   },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "ecomdev/ecomdev_phpunit": "*",
+    "ecomdev/mage-ci": "dev-master"
+  }
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com/maxbucknell/php-amdjs.git"
+    }
+  ],
   "extra":{
-    "map":[
-      ["app/code/community/MaxBucknell/AMDJS", "app/code/community/MaxBucknell/AMDJS"],
-      ["app/design/frontend/base/default/layout/maxbucknell/amdjs.xml", "app/design/frontend/base/default/layout/maxbucknell/amdjs.xml"],
-      ["app/design/frontend/base/default/template/maxbucknell/amdjs", "app/design/frontend/base/default/template/maxbucknell/amdjs"],
-      ["app/etc/modules/MaxBucknell_AMDJS.xml", "app/etc/modules/MaxBucknell_AMDJS.xml"],
-      ["js/maxbucknell/amdjs", "js/maxbucknell/amdjs"],
-      ["lib/amd-packager-php", "lib/amd-packager-php"],
-      ["lib/JShrink", "lib/JShrink"]
-    ]
+    "magento-root-dir": "tests/magento"
   }
 }
