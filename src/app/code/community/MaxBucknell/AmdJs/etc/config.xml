@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <MaxBucknell_AmdJs>
+            <version>1.1.0</version>
+        </MaxBucknell_AmdJs>
+    </modules>
+    <global>
+        <blocks>
+            <MaxBucknell_AmdJs>
+                <class>MaxBucknell_AmdJs_Block</class>
+            </MaxBucknell_AmdJs>
+        </blocks>
+        <helpers>
+            <MaxBucknell_AmdJs>
+                <class>MaxBucknell_AmdJs_Helper</class>
+            </MaxBucknell_AmdJs>
+        </helpers>
+        <models>
+            <MaxBucknell_AmdJs>
+                <class>MaxBucknell_AmdJs_Model</class>
+            </MaxBucknell_AmdJs>
+        </models>
+    </global>
+    <phpunit>
+        <suite>
+            <modules>
+                <MaxBucknell_AmdJs />
+            </modules>
+        </suite>
+    </phpunit>
+    <frontend>
+        <layout>
+            <updates>
+                <MaxBucknell_AmdJs>
+                    <file>maxbucknell/amdjs.xml</file>
+                </MaxBucknell_AmdJs>
+            </updates>
+        </layout>
+    </frontend>
+    <default>
+        <dev>
+            <amdjs>
+                <sources>js/maxbucknell/amdjs/modules</sources>
+                <aliases></aliases>
+                <concatenate>0</concatenate>
+                <minify>0</minify>
+                <minifier></minifier>
+                <cache>0</cache>
+                <split>0</split>
+                <devMode>1</devMode>
+            </amdjs>
+        </dev>
+    </default>
+</config>
