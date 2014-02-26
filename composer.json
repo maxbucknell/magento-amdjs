@@ -19,8 +19,5 @@
       "type": "vcs",
       "url": "git@github.com:maxbucknell/php-amdjs.git"
     }
-  ],
-  "extra":{
-    "magento-root-dir": "tests/magento"
-  }
+  ]
 }
