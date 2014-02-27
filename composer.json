@@ -12,12 +12,13 @@
   ],
   "require": {
     "magento-hackathon/magento-composer-installer": "*",
-    "maxbucknell/php-amdjs": "dev-master"
+    "maxbucknell/php-amdjs": "*"
   },
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:maxbucknell/php-amdjs.git"
+      "url": "git://github.com/maxbucknell/php-amdjs.git"
     }
-  ]
+  ],
+  "minimum-stability": "dev"
 }
