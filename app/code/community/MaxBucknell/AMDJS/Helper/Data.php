@@ -191,8 +191,9 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     protected function _getAliases()
     {
         $aliasesJSON = Mage::getStoreConfig('dev/amdjs/aliases');
+        $array = Mage::helper('core')->jsonDecode($aliasesJSON);
 
-        return Mage::helper('core')->jsonDecode($aliasesJSON);
+        return is_null($array) ? array() : $array;
     }
 
     /**
