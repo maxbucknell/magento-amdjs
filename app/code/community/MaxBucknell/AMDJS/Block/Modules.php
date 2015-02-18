@@ -45,6 +45,6 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
 
         $this->assign('requireJSUrl', $this->getJsUrl('maxbucknell/amdjs/lib/bower_components/requirejs/require.js'));
         $this->assign('compiledScriptURL', $helper->getBuiltFileUrl($this->_modules));
-        $this->assign('modules', array_values($modules));
+        $this->assign('modules', array_values($this->_modules));
     }
 }
