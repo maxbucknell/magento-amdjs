@@ -179,7 +179,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
             'paths' => $this->_getAliases(),
             'shim' => $this->_getShims(),
             'optimize' => $this->_getOptimizer(),
-            'include' => $modules
+            'include' => array_values($modules)
         );
 
         $jsonBuild = Mage::helper('core')->jsonEncode($build);
