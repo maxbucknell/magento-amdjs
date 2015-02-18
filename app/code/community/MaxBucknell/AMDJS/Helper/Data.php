@@ -5,16 +5,6 @@
  */
 
 /**
- * PHP implementation of the AMD specification.
- */
-require_once(Mage::getBaseDir('lib').DS.'amd-packager-php/Packager.php');
-
-/**
- * A PHP JavaScript Minifier.
- */
-require_once(Mage::getBaseDir('lib').DS.'JShrink/Minifier.php');
-
-/**
  * Functionality to compile modules with dependencies.
  */
 class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
@@ -27,7 +17,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $basePath = Mage::getBaseDir();
         $configOption = Mage::getStoreConfig('dev/amdjs/sources');
-        return $basePath.DS.$configOption;
+        return $basePath . DS . $configOption;
     }
 
     /**
@@ -47,7 +37,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getBuiltBaseDir()
     {
-        return Mage::getBaseDir('media').DS.'amdjs-cache';
+        return Mage::getBaseDir('media') . DS . 'amdjs-cache';
     }
 
     /**
@@ -58,7 +48,10 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getBuiltFileName($modules)
     {
-        return $this->getBuiltBaseDir().DS.$this->_getModuleHash($modules).'.js';
+        return $this->getBuiltBaseDir() . 
+               DS .
+               $this->_getModuleHash($modules) .
+               '.out.js';
     }
 
     /**
@@ -81,41 +74,6 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Minify the script.
-     *
-     * If a minifier has been set, then it will use that one, which
-     * allows for some pretty awesome customisation. Otherwise, it's
-     * some PHP minifier I found on the internet.
-     *
-     * @param string $input The script source to minify
-     * @return string
-     */
-    protected function _minify($input)
-    {
-        $output = null;
-        $minifierCommand = Mage::getStoreConfig('dev/amdjs/minifier');
-
-        if ($minifierCommand != '') {
-            $filename = Mage::getBaseDir().DS.'var'.DS.'input.js';
-            file_put_contents($filename, $input);
-
-            if (strpos($minifierCommand, '{{file}}') !== false) {
-                $minifierCommand = str_replace('{{file}}', $filename, $minifierCommand);
-            } else {
-                $minifierCommand.= ' '.$filename;
-            }
-
-            $output = shell_exec($minifierCommand);
-        }
-
-        if ($output == null) {
-            $output =  Minifier::minify($input);
-        }
-
-        return $output;
-    }
-
-    /**
      * Generate a unique hash of a set of modules.
      * @param array $modules
      * @return string
@@ -124,15 +82,6 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
     {
         ksort($modules);
         return md5(implode($modules));
-    }
-
-    /**
-     * Create the dir containing the built modules if it does not exist.
-     * @return void
-     */
-    protected function _createDir()
-    {
-        Mage::app()->getConfig()->getOptions()->createDirIfNotExists($this->getBuiltBaseDir());
     }
 
     /**
@@ -159,6 +108,11 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
         } else {
             return Mage::getStoreConfig('dev/amdjs/minify');
         }
+    }
+
+    protected function _getOptimizer()
+    {
+        return $this->_isMinificationEnabled() ? 'uglify2' : 'none';
     }
 
     /**
@@ -190,10 +144,26 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     protected function _getAliases()
     {
-        $aliasesJSON = Mage::getStoreConfig('dev/amdjs/aliases');
+        $aliasesJSON = Mage::getStoreConfig('dev/amdjs/paths');
         $array = Mage::helper('core')->jsonDecode($aliasesJSON);
 
         return is_null($array) ? array() : $array;
+    }
+
+    protected function _getShims()
+    {
+        $shimsJSON = Mage::getStoreConfig('dev/amdjs/shims');
+        $array = Mage::helper('core')->jsonDecode($shimsJSON);
+
+        return is_null($array) ? array() : $array;
+    }
+
+    protected function _getBuildScriptFilename($modules)
+    {
+        return Mage::getBaseDir('tmp') .
+               DS .
+               $this->_getModuleHash($modules) .
+               '.js';
     }
 
     /**
@@ -203,32 +173,21 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     protected function _build($modules)
     {
-        $filename = $this->getBuiltFileName($modules);
+        $build = array(
+            'baseUrl' => $this->getSourceBaseDir(),
+            'out' => $this->getBuiltFileName($modules),
+            'paths' => $this->_getAliases(),
+            'shim' => $this->_getShims(),
+            'optimize' => $this->_getOptimizer(),
+            'include' => $modules
+        );
 
-        $this->_createDir();
+        $jsonBuild = Mage::helper('core')->jsonEncode($build);
+        $buildScript = '(' . $jsonBuild . ')';
+        $filename = $this->_getBuildScriptFilename($modules);
+        file_put_contents($filename, $buildScript);
 
-        $packager = new Packager();
-        $packager->setBaseUrl($this->getSourceBaseDir());
-
-        foreach ($this->_getAliases() as $from => $to) {
-            $packager->addAlias($from, $to);
-        }
-
-        $builder = $packager->req($modules);
-
-
-        $output = $builder->output();
-
-        // This actually loads the modules and makes them run.
-        $output .= "\n\nrequire(".Mage::helper('core')->jsonEncode(array_keys($modules)).", function () {});\n";
-
-        if ($this->_isMinificationEnabled()) {
-            $output = $this->_minify($output);
-        }
-
-        if (file_put_contents($filename, $output) === false) {
-            throw new Exception('The built file could not be written to.');
-        }
+        shell_exec("r.js -o " . $filename);
     }
 
     /**
