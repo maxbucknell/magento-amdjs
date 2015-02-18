@@ -70,7 +70,7 @@ class MaxBucknell_AMDJS_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getBuiltFileUrl($modules)
     {
-        return $this->getBuiltBaseUrl().DS.$this->_getModuleHash($modules).'.js';
+        return $this->getBuiltBaseUrl().DS.$this->_getModuleHash($modules).'.out.js';
     }
 
     /**
