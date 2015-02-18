@@ -1,4 +1,4 @@
 <script src="<?php echo $requireJSUrl; ?>"></script>
 <script src="<?php echo $compiledScriptURL; ?>"></script>
-<script>require(['<?php implode('\',\'', $modules);?>'], function () {});</script>
+<script>require(['<?php echo implode("','", $modules); ?>'], function () {});</script>
 
