@@ -21,8 +21,8 @@
                                 <p>Relative to the web root.
                             ]]></comment>
                         </sources>
-                        <aliases translate="label">
-                            <label>Module Aliases</label>
+                        <paths translate="label">
+                            <label>Module Path Aliases</label>
                             <frontend_type>textarea</frontend_type>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
@@ -31,7 +31,18 @@
                             <comment><![CDATA[
                                 <p>Place a JSON object here detailing path mappings. See require.js docs for more details.</p>
                             ]]></comment>
-                        </aliases>
+                        </paths>
+                        <shims>
+                            <label>Script AMD Shims</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[
+                                <p>Place a JSON object here detailing modules to be shimmed. See require.js docs for more details.</p>
+                            ]]></comment>
+                        </shims>
                         <minify translate="label">
                             <label>Enable minification</label>
                             <frontend_type>select</frontend_type>
