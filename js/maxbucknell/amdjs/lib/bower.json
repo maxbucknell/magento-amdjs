@@ -1,0 +1,19 @@
+{
+  "name": "maxbucknell/magento-amdjs",
+  "version": "1.2.0",
+  "authors": [
+    "Max Bucknell <max.bucknell@redboxdigital.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.16"
+  }
+}
