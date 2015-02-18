@@ -1,7 +1,5 @@
 <?php
 
-require_once(Mage::getBaseDir('lib').DS.'amd-packager-php/Packager.php');
-
 class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
 {
     /**
@@ -45,7 +43,7 @@ class MaxBucknell_AMDJS_Block_Modules extends Mage_Core_Block_Template
             $helper->cacheModuleSet($this->_modules);
         }
 
-        $this->assign('requireJSUrl', $this->getJsUrl('maxbucknell/amdjs/lib/require-2.1.9.js'));
+        $this->assign('requireJSUrl', $this->getJsUrl('maxbucknell/amdjs/lib/bower_components/requirejs/require.js'));
         $this->assign('compiledScriptURL', $helper->getBuiltFileUrl($this->_modules));
     }
 }
